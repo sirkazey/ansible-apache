@@ -1,0 +1,5 @@
+---
+- include: setup-debian.yml
+  when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+
+- service: name=apache2 state=running enabled=yes
