@@ -1,20 +1,16 @@
 # Cyris-COTS Ansible playbook
-========
 
 ## Requirement
--------
 
  - Ubuntu distribution
  - Able to communicate with one ubuntu mirror to get RabbitMQ install
 
 ## COTS supported
--------
 
 Actually, these COTS are deployed by this playbook:
  - Apache2
 
 ## Playbook usage
--------
 
 To execute this playbook:
 ``ansible-playbook -i platform/(platforme_name) apache2.yml``
