@@ -1,0 +1,78 @@
+---
+
+  - name: Ensure python-software-properties is installed
+    apt: pkg=python-software-properties state=installed
+
+  - name: Install apache2
+    apt:
+      update_cache=yes
+      cache_valid_time=3600
+      pkg=apache2={{apache_version}}
+      state=installed
+      force=yes
+    tags:
+      - a2install
+    #sudo: yes
+
+  - name: Disable apache module
+    shell:
+      a2dismod {{ item }}
+    register: apache_cmd
+    changed_when: apache_cmd.stdout.endswith(' already disabled') == false
+    with_items: apache_module_disable
+    when: apache_module_disable != false
+    tags:
+      -a2install
+
+  - name: Enable apache module
+    shell:
+      a2enmod {{ item }}
+    register: apache_cmd
+    changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+    notify: Restart apache
+    with_items: apache_module_enable
+    when: apache_module_enable != false
+    tags:
+      - a2install
+
+  - name: Disable default apache site
+    shell:
+      a2dissite {{ item }}
+    register: apache_cmd
+    changed_when: apache_cmd.stdout.endswith(' already disabled') == false
+    notify: Restart apache
+    with_items: apache_site_disable
+    when: apache_site_disable != false
+    tags:
+      - a2install
+
+  - name: Configure Apache ports
+    copy:
+      src: ports.conf
+      dest: /etc/apache2/ports.conf
+    changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+    tags:
+      - a2install
+
+  - name: Copy maintenance page
+    copy:
+      src: "maintenance.html"
+      dest: "/var/www/html"
+      tags:
+        - a2install
+
+  - name: Copy error page
+    copy:
+      src: "error.html"
+      dest: "/var/www/html"
+      tags:
+        - a2install
+
+  - name: Tighten Apache security
+    copy:
+      src: security.conf
+      dest: /etc/apache2/conf-available/security.conf
+    notify: Restart apache
+    changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+    tags:
+      - a2install

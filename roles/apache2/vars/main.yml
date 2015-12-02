@@ -1,0 +1,12 @@
+apache_module_disable: false
+apache_module_enable:
+  - ssl
+  - rewrite
+  - reqtimeout
+  - proxy
+  - proxy_http
+  - cgid
+  - headers
+apache_site_disable:
+  - 000-default
+  - default-ssl

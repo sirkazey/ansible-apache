@@ -1,0 +1,8 @@
+---
+## To execute the playbook: ansible-playbook -i platform/(platforme_name) apache2.yml
+## If root user isn't used, you have to uncomment the sudo line and specify the --ask-sudo-pass argument.
+- hosts: apache2
+  roles:
+    - apache2
+  ## Mandatory if no root user
+  #sudo: true

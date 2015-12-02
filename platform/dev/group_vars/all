@@ -1,0 +1,27 @@
+# Variables de plateforme
+ptf_name: dev
+cyris_sts_externe: ip:port
+cyris_outlookapiadapter: ip:port
+cyris_proxyswift: ip:port
+
+# URL externes
+url_token: token-{{ptf_name}}.example.com
+url_storage: storage-{{ptf_name}}.example.com
+url_storage_ms: storage-ms-{{ptf_name}}.example.com
+
+# Variables RabbitMQ
+rabbitmq_version: 3.2.4-1
+
+# Variables Apache
+apache_version: 2.4.7-1ubuntu4.8
+apache_listening: eth0
+apache_port: "80"
+apache_ssl_port: "443"
+apache_site_enable:
+  - token-{{ptf_name}}
+  - storage-{{ptf_name}}
+  - storage-ms-{{ptf_name}}
+SSLCertificateFile: /etc/apache2/ssl/cert.crt
+SSLCertificateChainFile: /etc/apache2/ssl/chain.crt
+SSLCertificateKeyFile: /etc/apache2/ssl/key.key
+apache_host: "{{ansible_'apache_listening'.ipv4.address}}"
