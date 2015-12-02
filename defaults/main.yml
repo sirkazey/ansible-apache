@@ -1,4 +1,0 @@
----
-apache_conf_dir: /etc/apache2/
-apache_port: 80
-apache_sites_dir: "{{apache_conf_dir}}sites-enabled/"
