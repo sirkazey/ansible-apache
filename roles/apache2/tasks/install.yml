@@ -1,9 +1,9 @@
 ---
 
-  - name: Ensure python-software-properties is installed
+  - name: Apache2 | Ensure python-software-properties is installed
     apt: pkg=python-software-properties state=installed
 
-  - name: Install apache2
+  - name: Apache2 | Install apache2
     apt:
       update_cache=yes
       cache_valid_time=3600
@@ -14,7 +14,7 @@
       - a2install
     #sudo: yes
 
-  - name: Disable apache module
+  - name: Apache2 | Disable apache module
     shell:
       a2dismod {{ item }}
     register: apache_cmd
@@ -24,7 +24,7 @@
     tags:
       -a2install
 
-  - name: Enable apache module
+  - name: Apache2 | Enable apache module
     shell:
       a2enmod {{ item }}
     register: apache_cmd
@@ -35,7 +35,7 @@
     tags:
       - a2install
 
-  - name: Disable default apache site
+  - name: Apache2 | Disable default apache site
     shell:
       a2dissite {{ item }}
     register: apache_cmd
@@ -46,33 +46,38 @@
     tags:
       - a2install
 
-  - name: Configure Apache ports
-    copy:
-      src: ports.conf
-      dest: /etc/apache2/ports.conf
-    changed_when: apache_cmd.stdout.endswith(' already enabled') == false
+  - name: Apache2 | Configure Apache ports
+    template:
+      src="ports.conf"
+      dest="/etc/apache2/ports.conf"
     tags:
       - a2install
 
-  - name: Copy maintenance page
-    copy:
-      src: "maintenance.html"
-      dest: "/var/www/html"
-      tags:
-        - a2install
+  - name: Apache2 | Copy maintenance page
+    template:
+      src="maintenance.html"
+      dest="/var/www/html"
+    tags:
+      - a2install
 
-  - name: Copy error page
-    copy:
-      src: "error.html"
-      dest: "/var/www/html"
-      tags:
-        - a2install
+  - name: Apache2 | Copy error page
+    template:
+      src="error.html"
+      dest="/var/www/html"
+    tags:
+      - a2install
 
-  - name: Tighten Apache security
-    copy:
-      src: security.conf
-      dest: /etc/apache2/conf-available/security.conf
+  - name: Apache2 | Copy logrotate apache2 reverseproxy
+    template:
+      src=logrotate_rpx
+      dest="/etc/logrotate.d/reverseproxy"
+    tags:
+      - a2install
+
+  - name: Apache2 | Tighten Apache security
+    template:
+      src="security.conf"
+      dest="/etc/apache2/conf-available/security.conf"
     notify: Restart apache
-    changed_when: apache_cmd.stdout.endswith(' already enabled') == false
     tags:
       - a2install
