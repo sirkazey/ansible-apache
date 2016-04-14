@@ -7,6 +7,9 @@ apache_module_enable:
   - proxy_http
   - cgid
   - headers
+  - lbmethod_byrequests
+  - lbmethod_bytraffic
+
 apache_site_disable:
   - 000-default
   - default-ssl
